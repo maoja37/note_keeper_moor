@@ -44,6 +44,14 @@ class _NoteListPageState extends State<NoteListPage> {
           );
         }),
       ),
+      floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder( side: BorderSide(color: Colors.black, width: 2.0)),
+        backgroundColor: Colors.white,
+        onPressed: () {
+          Navigator.pushNamed(context, '/addNote');
+        },
+        child: const Icon(Icons.add, color: Colors.black),
+      ),
     );
   }
 
