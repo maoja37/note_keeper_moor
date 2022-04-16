@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:note_keeper_moor/database/database.dart';
 import 'package:provider/provider.dart';
+import 'package:drift/drift.dart';
+
+import 'note_detail_page.dart';
 
 class NoteListPage extends StatefulWidget {
   const NoteListPage({Key? key}) : super(key: key);
@@ -48,7 +51,12 @@ class _NoteListPageState extends State<NoteListPage> {
         shape: const CircleBorder( side: BorderSide(color: Colors.black, width: 2.0)),
         backgroundColor: Colors.white,
         onPressed: () {
-          Navigator.pushNamed(context, '/addNote');
+          _navigateToDetail('Add Note',const NoteCompanion(
+            title: Value(''),
+            description: Value(''),
+            priority: Value(1),
+            color: Value(0),
+          ));
         },
         child: const Icon(Icons.add, color: Colors.black),
       ),
@@ -61,5 +69,10 @@ class _NoteListPageState extends State<NoteListPage> {
 
   Widget noteListUI(List<NoteData> noteList) {
     return Container( );
+  }
+
+  void _navigateToDetail(String title, NoteCompanion noteCompanion) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) =>NoteDetailPage(title: title, noteCompanion: noteCompanion,),));
+
   }
 }
