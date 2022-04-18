@@ -2,8 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:note_keeper_moor/database/database.dart';
 import 'package:provider/provider.dart';
-import 'package:drift/drift.dart';
+import 'package:drift/drift.dart' as dr;
 import 'note_detail_page.dart';
+//import flutter_staggered_grid_view package
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class NoteListPage extends StatefulWidget {
   const NoteListPage({Key? key}) : super(key: key);
@@ -56,10 +58,10 @@ class _NoteListPageState extends State<NoteListPage> {
           _navigateToDetail(
               'Add Note',
               const NoteCompanion(
-                  title: Value(''),
-                  description: Value(''),
-                  color: Value(1),
-                  priority: Value(1)));
+                  title: dr.Value(''),
+                  description: dr.Value(''),
+                  color: dr.Value(1),
+                  priority: dr.Value(1)));
         },
         shape: const CircleBorder(
           side: BorderSide(color: Colors.black, width: 2),
@@ -78,9 +80,46 @@ class _NoteListPageState extends State<NoteListPage> {
   }
 
   Widget noteListUI(List<NoteData> noteList) {
-    return Container(
-      child: Center(child: Text('Note exist')),
-    );
+    return StaggeredGridView.countBuilder(
+        crossAxisCount: 3,
+        itemCount: noteList.length,
+        itemBuilder: (context, index) {
+          NoteData noteData = noteList[index];
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              border: Border.all(
+                color: Colors.black,
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(noteData.title),
+                    Text(_getPriority(noteData.priority!))
+                  ],
+                ),
+                Text(noteData.description),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '12/12/2021',
+                      style: Theme.of(context).textTheme.subtitle2,
+                    )
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+        staggeredTileBuilder: (index) => StaggeredTile.fit(2));
   }
 
   _navigateToDetail(String title, NoteCompanion noteCompanion) async {
@@ -95,6 +134,17 @@ class _NoteListPageState extends State<NoteListPage> {
     );
     if (res != null && res == true) {
       setState(() {});
+    }
+  }
+
+  _getPriority(int? priority) {
+    switch (priority) {
+      case 1:
+        return '!!!';
+      case 2:
+        return '!!';
+      default:
+        return '!';
     }
   }
 }
