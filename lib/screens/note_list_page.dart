@@ -1,78 +1,100 @@
+// ignore_for_file: prefer_const_constructors
 import 'package:flutter/material.dart';
 import 'package:note_keeper_moor/database/database.dart';
 import 'package:provider/provider.dart';
 import 'package:drift/drift.dart';
-
 import 'note_detail_page.dart';
 
 class NoteListPage extends StatefulWidget {
   const NoteListPage({Key? key}) : super(key: key);
 
   @override
-  State<NoteListPage> createState() => _NoteListPageState();
+  _NoteListPageState createState() => _NoteListPageState();
 }
 
 class _NoteListPageState extends State<NoteListPage> {
   late AppDatabase database;
-
   @override
   Widget build(BuildContext context) {
     database = Provider.of<AppDatabase>(context);
     return Scaffold(
       body: FutureBuilder<List<NoteData>>(
         future: _getNoteFromDatabase(),
-        builder: ((context, snapshot) {
+        builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<NoteData>? noteList = snapshot.data;
-            if(noteList!=null){
-              if(noteList.isEmpty){
+            if (noteList != null) {
+              if (noteList.isEmpty) {
                 return Center(
-                  child:  Text('No Notes Found', style: Theme.of(context).textTheme.bodyText2,),
+                  child: Text(
+                    'No Notes Found, Click on add button to add new note',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText2,
+                  ),
                 );
-              } else{
+              } else {
                 return noteListUI(noteList);
               }
             }
           } else if (snapshot.hasError) {
-            return Text(
-              '${snapshot.error}',
+            return Center(
+                child: Text(
+              snapshot.error.toString(),
               style: Theme.of(context).textTheme.bodyText2,
-            );
+            ));
           }
           return Center(
             child: Text(
-              'Click on add butotn to add new note',
+              'Click on add button to add new note',
               style: Theme.of(context).textTheme.bodyText2,
             ),
           );
-        }),
+        },
       ),
       floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder( side: BorderSide(color: Colors.black, width: 2.0)),
-        backgroundColor: Colors.white,
         onPressed: () {
-          _navigateToDetail('Add Note',const NoteCompanion(
-            title: Value(''),
-            description: Value(''),
-            priority: Value(1),
-            color: Value(0),
-          ));
+          _navigateToDetail(
+              'Add Note',
+              const NoteCompanion(
+                  title: Value(''),
+                  description: Value(''),
+                  color: Value(1),
+                  priority: Value(1)));
         },
-        child: const Icon(Icons.add, color: Colors.black),
+        shape: const CircleBorder(
+          side: BorderSide(color: Colors.black, width: 2),
+        ),
+        backgroundColor: Colors.white,
+        child: const Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
       ),
     );
   }
 
-  Future<List<NoteData>> _getNoteFromDatabase() {
-    return database.getNoteList();
+  Future<List<NoteData>> _getNoteFromDatabase() async {
+    return await database.getNoteList();
   }
 
   Widget noteListUI(List<NoteData> noteList) {
-    return Container( );
+    return Container(
+      child: Center(child: Text('Note exist')),
+    );
   }
 
-  void _navigateToDetail(String title, NoteCompanion noteCompanion) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) =>NoteDetailPage(title: title, noteCompanion: noteCompanion,),));
-
+  _navigateToDetail(String title, NoteCompanion noteCompanion) async {
+    var res = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NoteDetailPage(
+          title: title,
+          noteCompanion: noteCompanion,
+        ),
+      ),
+    );
+    if (res != null && res == true) {
+      setState(() {});
+    }
   }
 }

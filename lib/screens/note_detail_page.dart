@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:note_keeper_moor/database/database.dart';
 import 'package:provider/provider.dart';
+import 'package:drift/drift.dart' as dr;
 
 class NoteDetailPage extends StatefulWidget {
   final String title;
@@ -33,6 +34,36 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
     database = Provider.of<AppDatabase>(context);
     return Scaffold(
       appBar: _getDetailAppBar(widget.title),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+        child: Column(children: [
+          TextFormField(
+            controller: titleEditingController,
+            decoration: InputDecoration(
+              
+              hintText: 'Enter Title',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+            ),
+          
+          ),
+          const SizedBox(height: 10.0,),
+          TextFormField(
+            controller: descriptionEditingController,
+            maxLength: 255,
+            maxLines: 8,
+            minLines: 7,
+            decoration: InputDecoration(
+              hintText: 'Enter Description',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+            ),
+          
+          ),
+        ])
+      ),
     );
   }
 
@@ -56,7 +87,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       actions: [
         IconButton(
           onPressed: () {
-          
+            _saveTodo();
           },
           icon: const Icon(
             Icons.save,
@@ -75,5 +106,15 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       
       ],
     );
+  }
+
+  void _saveTodo() {
+    database.insertNote(NoteCompanion(
+      title: dr.Value(titleEditingController.text),
+      description: dr.Value(descriptionEditingController.text),
+      priority: dr.Value(1),
+      color:dr. Value(0),
+    
+    ) ).then((value) => Navigator.pop(context));
   }
 }
