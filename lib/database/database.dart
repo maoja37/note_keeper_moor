@@ -34,10 +34,20 @@ class AppDatabase  extends _$AppDatabase {
   // TODO: implement schemaVersion
   int get schemaVersion => 1 ;
 
+  //get all notes from database
   Future<List<NoteData>> getNoteList()  async =>  await select(note).get();
 
+  //insert note to database
   Future<int> insertNote(NoteCompanion noteCompanion) async => await into(note).insert(noteCompanion);
+
+  //delete note from database
+  Future<int> deleteNote(int id) async => await (delete(note)..where((t) => t.id.equals(id))).go();
+
+  //update note in database
+  Future<bool> updateNote(NoteData noteData) async => await update(note).replace(noteData);
+  
 
   
 }
+
 

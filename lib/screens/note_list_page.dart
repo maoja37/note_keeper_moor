@@ -19,21 +19,18 @@ class _NoteListPageState extends State<NoteListPage> {
   
   late AppDatabase database;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-     
-  }
+   int axisCount = 2;
   @override
   Widget build(BuildContext context) {
     database = Provider.of<AppDatabase>(context);
     return Scaffold(
+      appBar: _getNoteListAppBar(),
       body: FutureBuilder<List<NoteData>>(
         future: _getNoteFromDatabase(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<NoteData>? noteList = snapshot.data;
-            print(noteList!.length);
+            
             if (noteList != null) {
               if (noteList.isEmpty) {
                 return Center(
@@ -89,42 +86,59 @@ class _NoteListPageState extends State<NoteListPage> {
   }
 
   Widget noteListUI(List<NoteData> noteList) {
+    print(noteList.length);
     return StaggeredGridView.countBuilder(
       itemCount: noteList.length,
       crossAxisCount: 4,
       itemBuilder: (context, index) {
         NoteData noteData = noteList[index];
-        return Container(
-          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(color: Colors.black)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(noteData.title),
-                  Text(_getPriority(noteData.priority!))
-                ],
-              ),
-              Text(noteData.description),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    '12/12/2021',
-                    style: Theme.of(context).textTheme.subtitle2,
-                  )
-                ],
-              )
-            ],
+        return InkWell(
+          onTap: () {
+            _navigateToDetail(
+                'Edit Note',
+                NoteCompanion(
+                    id: dr.Value(noteData.id),
+                    title: dr.Value(noteData.title),
+                    description: dr.Value(noteData.description),
+                    priority: dr.Value(noteData.priority),
+                    color: dr.Value(noteData.color)));
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric( horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                border: Border.all(color: Colors.black)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(child: Text(noteData.title, style: Theme.of(context).textTheme.bodyText2)),
+                    Text(_getPriority(noteData.priority!), style: TextStyle(
+                      color: _getColor(noteData.priority),
+                    ))
+                  ],
+                ),
+                Text(noteData.description),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      '12/12/2021',
+                      style: Theme.of(context).textTheme.subtitle2,
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         );
       },
-      staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+      staggeredTileBuilder: (index) => StaggeredTile.fit(axisCount   ),
+      crossAxisSpacing: 4,
+      mainAxisSpacing: 4,
     );
   }
 
@@ -152,5 +166,45 @@ class _NoteListPageState extends State<NoteListPage> {
       default:
         return '!';
     }
+  }
+
+  _getColor(int? priority) {
+    switch (priority) {
+      case 1:
+        return Colors.red;
+      case 2:
+        return Colors.orange;
+      default:
+        return Colors.yellow;
+    }
+  }
+
+
+    _getNoteListAppBar() {
+    return AppBar(
+      backgroundColor: Colors.white,
+      centerTitle: true,
+      elevation: 0,
+      title: Text(
+        'Notes',
+        style: Theme.of(context).textTheme.headline5,
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            if (axisCount == 2) {
+              axisCount = 4;
+            } else {
+              axisCount = 2;
+            }
+            setState(() {});
+          },
+          icon: Icon(
+            axisCount == 4 ? Icons.grid_on : Icons.list,
+            color: Colors.black,
+          ),
+        )
+      ],
+    );
   }
 }

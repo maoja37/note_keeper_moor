@@ -20,7 +20,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
   late TextEditingController titleEditingController;
   late TextEditingController descriptionEditingController;
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     titleEditingController = TextEditingController();
@@ -29,41 +29,40 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
     descriptionEditingController.text = widget.noteCompanion.description.value;
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     database = Provider.of<AppDatabase>(context);
     return Scaffold(
       appBar: _getDetailAppBar(widget.title),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        child: Column(children: [
-          TextFormField(
-            controller: titleEditingController,
-            decoration: InputDecoration(
-              
-              hintText: 'Enter Title',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          child: Column(children: [
+            TextFormField(
+              controller: titleEditingController,
+              decoration: InputDecoration(
+                hintText: 'Enter Title',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
               ),
             ),
-          
-          ),
-          const SizedBox(height: 10.0,),
-          TextFormField(
-            controller: descriptionEditingController,
-            maxLength: 255,
-            maxLines: 8,
-            minLines: 7,
-            decoration: InputDecoration(
-              hintText: 'Enter Description',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5.0),
+            const SizedBox(
+              height: 10.0,
+            ),
+            TextFormField(
+              controller: descriptionEditingController,
+              maxLength: 255,
+              maxLines: 8,
+              minLines: 7,
+              decoration: InputDecoration(
+                hintText: 'Enter Description',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
               ),
             ),
-          
-          ),
-        ])
-      ),
+          ])),
     );
   }
 
@@ -77,7 +76,6 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       leading: IconButton(
         onPressed: () {
           Navigator.pop(context);
-        
         },
         icon: const Icon(
           Icons.chevron_left_outlined,
@@ -96,25 +94,41 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
         ),
         IconButton(
           onPressed: () {
-          
+            _deleteNote();
           },
           icon: const Icon(
             Icons.delete,
             color: Colors.black,
           ),
         ),
-      
       ],
     );
   }
 
   void _saveTodo() {
-    database.insertNote(NoteCompanion(
-      title: dr.Value(titleEditingController.text),
-      description: dr.Value(descriptionEditingController.text),
-      priority: dr.Value(1),
-      color:dr. Value(0),
-    
-    ) ).then((value) => Navigator.pop(context,true));
+    if (widget.noteCompanion.id.present) {
+      database.updateNote(NoteData(
+        id: widget.noteCompanion.id.value,
+        title: titleEditingController.text,
+        description: descriptionEditingController.text,
+        color: 1,
+        priority: 1,
+      )).then((value) => Navigator.pop(context,true));
+    } else {
+      database
+          .insertNote(NoteCompanion(
+            title: dr.Value(titleEditingController.text),
+            description: dr.Value(descriptionEditingController.text),
+            priority: dr.Value(1),
+            color: dr.Value(0),
+          ))
+          .then((value) => Navigator.pop(context, true));
+    }
+  }
+
+  void _deleteNote() {
+    database
+        .deleteNote(widget.noteCompanion.id.value)
+        .then((value) => Navigator.pop(context, true));
   }
 }
