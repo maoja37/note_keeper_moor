@@ -115,6 +115,6 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       priority: dr.Value(1),
       color:dr. Value(0),
     
-    ) ).then((value) => Navigator.pop(context));
+    ) ).then((value) => Navigator.pop(context,true));
   }
 }

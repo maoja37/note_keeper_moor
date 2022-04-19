@@ -15,7 +15,15 @@ class NoteListPage extends StatefulWidget {
 }
 
 class _NoteListPageState extends State<NoteListPage> {
+
+  
   late AppDatabase database;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+     
+  }
   @override
   Widget build(BuildContext context) {
     database = Provider.of<AppDatabase>(context);
@@ -25,6 +33,7 @@ class _NoteListPageState extends State<NoteListPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             List<NoteData>? noteList = snapshot.data;
+            print(noteList!.length);
             if (noteList != null) {
               if (noteList.isEmpty) {
                 return Center(
@@ -81,45 +90,42 @@ class _NoteListPageState extends State<NoteListPage> {
 
   Widget noteListUI(List<NoteData> noteList) {
     return StaggeredGridView.countBuilder(
-        crossAxisCount: 3,
-        itemCount: noteList.length,
-        itemBuilder: (context, index) {
-          NoteData noteData = noteList[index];
-          return Container(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            decoration: BoxDecoration(
+      itemCount: noteList.length,
+      crossAxisCount: 4,
+      itemBuilder: (context, index) {
+        NoteData noteData = noteList[index];
+        return Container(
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              border: Border.all(
-                color: Colors.black,
-                width: 1,
+              border: Border.all(color: Colors.black)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(noteData.title),
+                  Text(_getPriority(noteData.priority!))
+                ],
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(noteData.title),
-                    Text(_getPriority(noteData.priority!))
-                  ],
-                ),
-                Text(noteData.description),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      '12/12/2021',
-                      style: Theme.of(context).textTheme.subtitle2,
-                    )
-                  ],
-                )
-              ],
-            ),
-          );
-        },
-        staggeredTileBuilder: (index) => StaggeredTile.fit(2));
+              Text(noteData.description),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    '12/12/2021',
+                    style: Theme.of(context).textTheme.subtitle2,
+                  )
+                ],
+              )
+            ],
+          ),
+        );
+      },
+      staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+    );
   }
 
   _navigateToDetail(String title, NoteCompanion noteCompanion) async {
@@ -137,8 +143,8 @@ class _NoteListPageState extends State<NoteListPage> {
     }
   }
 
-  _getPriority(int? priority) {
-    switch (priority) {
+  String _getPriority(int p) {
+    switch (p) {
       case 1:
         return '!!!';
       case 2:
