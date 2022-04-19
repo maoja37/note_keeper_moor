@@ -138,10 +138,10 @@ class _NoteListPageState extends State<NoteListPage> {
       },
       staggeredTileBuilder: (index) => StaggeredTile.fit(axisCount   ),
       crossAxisSpacing: 4,
-      mainAxisSpacing: 4,
+      mainAxisSpacing: 8 ,
     );
   }
-
+                  
   _navigateToDetail(String title, NoteCompanion noteCompanion) async {
     var res = await Navigator.push(
       context,

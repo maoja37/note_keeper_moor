@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_keeper_moor/database/database.dart';
+import 'package:note_keeper_moor/util/priority_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:drift/drift.dart' as dr;
 
@@ -19,6 +20,8 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
   late AppDatabase database;
   late TextEditingController titleEditingController;
   late TextEditingController descriptionEditingController;
+   int priorityLevel = 0;
+  int colorLevel = 0;
 
   @override
   void initState() {
@@ -27,17 +30,25 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
     descriptionEditingController = TextEditingController();
     titleEditingController.text = widget.noteCompanion.title.value;
     descriptionEditingController.text = widget.noteCompanion.description.value;
+    priorityLevel = widget.noteCompanion.priority.value!;
+    colorLevel = widget.noteCompanion.color.value!;
     super.initState();
   }
-
+                    
   @override
   Widget build(BuildContext context) {
     database = Provider.of<AppDatabase>(context);
     return Scaffold(
       appBar: _getDetailAppBar(widget.title),
       body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
           child: Column(children: [
+            PriorityPicker(index: priorityLevel, onTap: (selectedIndex){
+              setState(() {
+                priorityLevel = selectedIndex;
+              });
+            
+            }),
             TextFormField(
               controller: titleEditingController,
               decoration: InputDecoration(
@@ -65,7 +76,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
           ])),
     );
   }
-
+         
   _getDetailAppBar(String title) {
     return AppBar(
       backgroundColor: Colors.white,
