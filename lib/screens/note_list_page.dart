@@ -66,8 +66,8 @@ class _NoteListPageState extends State<NoteListPage> {
               const NoteCompanion(
                   title: dr.Value(''),
                   description: dr.Value(''),
-                  color: dr.Value(1),
-                  priority: dr.Value(1)));
+                  color: dr.Value(0),
+                  priority: dr.Value(0)));
         },
         shape: const CircleBorder(
           side: BorderSide(color: Colors.black, width: 2),
@@ -159,9 +159,9 @@ class _NoteListPageState extends State<NoteListPage> {
 
   String _getPriority(int p) {
     switch (p) {
-      case 1:
+      case 0:
         return '!!!';
-      case 2:
+      case 1:
         return '!!';
       default:
         return '!';
@@ -170,9 +170,9 @@ class _NoteListPageState extends State<NoteListPage> {
 
   _getColor(int? priority) {
     switch (priority) {
-      case 1:
+      case 0:
         return Colors.red;
-      case 2:
+      case 1:
         return Colors.orange;
       default:
         return Colors.yellow;

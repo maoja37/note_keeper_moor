@@ -14,7 +14,7 @@ class PriorityPicker extends StatefulWidget {
 class _PriorityPickerState extends State<PriorityPicker> {
   List<String> nameList = ['Low', 'High', 'Very High'];
   List<Color> colorList = [Colors.green, Colors.greenAccent, Colors.red];
-  @override
+  @override   
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -26,6 +26,7 @@ class _PriorityPickerState extends State<PriorityPicker> {
           return InkWell(
             onTap: () {
               widget.index = index;
+              widget.onTap(index);
               setState(() {});
             },
             child: Container(

@@ -122,16 +122,16 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
         id: widget.noteCompanion.id.value,
         title: titleEditingController.text,
         description: descriptionEditingController.text,
-        color: 1,
-        priority: 1,
+        color: colorLevel,
+        priority: priorityLevel,
       )).then((value) => Navigator.pop(context,true));
     } else {
       database
           .insertNote(NoteCompanion(
             title: dr.Value(titleEditingController.text),
             description: dr.Value(descriptionEditingController.text),
-            priority: dr.Value(1),
-            color: dr.Value(0),
+            priority: dr.Value(priorityLevel),
+            color: dr.Value(colorLevel),
           ))
           .then((value) => Navigator.pop(context, true));
     }
