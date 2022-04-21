@@ -167,15 +167,15 @@ class _NoteListPageState extends State<NoteListPage> {
         return '!';
     }
   }
-
+//day 1
   _getColor(int? priority) {
     switch (priority) {
       case 0:
         return Colors.red;
       case 1:
-        return Colors.orange;
+        return Colors.greenAccent;
       default:
-        return Colors.yellow;
+        return Colors.green;
     }
   }
 
