@@ -172,6 +172,7 @@ class _NoteListPageState extends State<NoteListPage> {
 //day 3 
 //day 4 
 //day 5
+//day 6
   _getColor(int? priority) {
     switch (priority) {
       case 0:
